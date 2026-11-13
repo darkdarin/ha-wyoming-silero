@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-# Wyoming Silero for Home Assistant
+# Wyoming Silero для Home Assistant
 
 [![Release](https://img.shields.io/github/v/release/darkdarin/ha-wyoming-silero?sort=semver)](https://github.com/darkdarin/ha-wyoming-silero/releases)
 [![CI](https://github.com/darkdarin/ha-wyoming-silero/actions/workflows/ci.yml/badge.svg)](https://github.com/darkdarin/ha-wyoming-silero/actions/workflows/ci.yml)
@@ -15,121 +15,123 @@
 ![amd64](https://img.shields.io/badge/amd64-yes-green.svg)
 [![License](https://img.shields.io/github/license/darkdarin/ha-wyoming-silero)](LICENSE)
 
-Russian **text-to-speech** for Home Assistant Assist that runs on your Home Assistant machine, with no
-cloud: a [Wyoming](https://github.com/OHF-Voice/wyoming) server on the
-[Silero](https://github.com/snakers4/silero-models) model `v5_6_ru`, packaged as a Home Assistant app.
-Assist and [FlowPilot](https://github.com/darkdarin/flowpilot) speak with it like with any Wyoming voice.
+Русский **синтез речи** для Assist в Home Assistant, который работает на вашем сервере Home Assistant, без
+облака: сервер [Wyoming](https://github.com/OHF-Voice/wyoming) на модели
+[Silero](https://github.com/snakers4/silero-models) `v5_6_ru` в виде приложения Home Assistant. Assist и
+[FlowPilot](https://github.com/darkdarin/flowpilot) говорят через него как через любой голос Wyoming.
 
-> Early version (0.1). Whole and streamed text-to-speech works end to end on a Raspberry Pi 5.
+> Ранняя версия (0.1). Синтез целым текстом и потоком работает на Raspberry Pi 5.
 
-> **The Silero model is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/):
-> non-commercial use only.** It is not part of this project: the app downloads it from Silero on the first
-> start. The code of this project is licensed under Apache 2.0.
+> **Модель Silero распространяется по лицензии [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.ru):
+> только некоммерческое использование.** Модель не входит в проект: приложение скачивает её у Silero при первом
+> запуске. Код проекта распространяется по лицензии Apache 2.0.
 
-## What you get
+## Что вы получаете
 
-- **Native Russian voices.** Five speakers of the Russian-only `v5_6_ru` model (`aidar`, `baya`, `kseniya`,
-  `xenia`, `eugene`) with no accent, built-in stresses and homographs, question and exclamation intonation.
-- **Fast answers on a Raspberry Pi 5.** The answer starts to sound 0.2–0.4 s after its first sentence is
-  written; speech is synthesized about 15 times faster than it plays, so long answers do not stutter.
-- **Streaming.** Sentences are spoken one by one while the assistant is still writing the answer.
-- **Text an LLM writes.** Numbers, dates, times, temperatures and percentages are read as words; Markdown,
-  links and emoji are left out; `+` stress marks and SSML pass to the model.
-- **No silence.** An English answer is spoken letter by letter instead of being dropped; text with nothing to
-  say gets a Wyoming error, so the client knows what happened.
-- **Local.** After the model download the app works offline.
+- **Родные русские голоса.** Пять дикторов чисто русской модели `v5_6_ru` (`aidar`, `baya`, `kseniya`, `xenia`,
+  `eugene`) без акцента, со встроенными ударениями и омографами, вопросительной и восклицательной интонацией.
+- **Быстрые ответы на Raspberry Pi 5.** Ответ начинает звучать через 0,2–0,4 с после того, как дописано его
+  первое предложение; речь синтезируется примерно в 15 раз быстрее, чем звучит, поэтому длинные ответы не
+  заикаются.
+- **Потоковый синтез.** Предложения озвучиваются по одному, пока ассистент ещё пишет ответ.
+- **Текст, который пишет LLM.** Числа, даты, время, температура и проценты читаются словами; Markdown, ссылки и
+  эмодзи пропускаются; разметка ударений `+` и SSML передаются модели.
+- **Без тишины.** Ответ на английском произносится по буквам, а не пропадает; на текст, в котором нечего сказать,
+  клиент получает ошибку Wyoming и понимает, что произошло.
+- **Локально.** После загрузки модели приложение работает без интернета.
 
-## What you need
+## Что нужно
 
-- Home Assistant OS or Supervised, **2026.10 or newer**, on aarch64 or amd64 (for example a Raspberry Pi 5).
-- About **800 MB** of free memory and 150 MB of disk for the model.
-- Internet access on the first start, to download the model.
+- Home Assistant OS или Supervised, **2026.10 или новее**, на aarch64 или amd64 (например, Raspberry Pi 5).
+- Около **800 МБ** свободной памяти и 150 МБ на диске для модели.
+- Интернет при первом запуске, чтобы скачать модель.
 
-## Installation
+## Установка
 
-### Step 1. Install the app
+### Шаг 1. Установите приложение
 
-[![Open the app in Home Assistant](https://my.home-assistant.io/badges/supervisor_addon.svg)](https://my.home-assistant.io/redirect/supervisor_addon/?addon=1f182efb_wyoming_silero&repository_url=https%3A%2F%2Fgithub.com%2Fdarkdarin%2Fha-wyoming-silero)
+[![Открыть приложение в Home Assistant](https://my.home-assistant.io/badges/supervisor_addon.svg)](https://my.home-assistant.io/redirect/supervisor_addon/?addon=1f182efb_wyoming_silero&repository_url=https%3A%2F%2Fgithub.com%2Fdarkdarin%2Fha-wyoming-silero)
 
-1. Press the button: Home Assistant offers to add the repository and opens the app page.
-   By hand: **Settings → Apps → App Store → ⋮ → Repositories**, add
-   `https://github.com/darkdarin/ha-wyoming-silero`, then find **Wyoming Silero** in the store.
-2. Install the app and start it. The first start downloads the model (about 150 MB); the log says
-   **Ready on tcp://0.0.0.0:10200** when the voice is ready.
+1. Нажмите кнопку: Home Assistant предложит добавить репозиторий и откроет страницу приложения.
+   Вручную: **Настройки → Приложения → Магазин приложений → ⋮ → Репозитории**, добавьте
+   `https://github.com/darkdarin/ha-wyoming-silero` и найдите **Wyoming Silero** в магазине.
+2. Установите приложение и запустите его. Первый запуск скачивает модель (около 150 МБ); когда голос готов,
+   в журнале появляется **Ready on tcp://0.0.0.0:10200**.
 
-### Step 2. Add the Wyoming integration
+### Шаг 2. Добавьте интеграцию Wyoming
 
-Home Assistant discovers the app by itself: confirm the **Wyoming Protocol** integration in
-**Settings → Devices & services**.
+Home Assistant сам находит приложение: подтвердите интеграцию **Wyoming Protocol** в
+**Настройки → Устройства и службы**.
 
-### Step 3. Choose the voice
+### Шаг 3. Выберите голос
 
-In **Settings → Voice assistants**, open your assistant, select **silero** as text-to-speech and pick a voice.
+В **Настройки → Голосовые ассистенты** откройте своего ассистента, выберите **silero** как синтез речи и выберите
+голос.
 
-In FlowPilot, point the "Wyoming text-to-speech" node at `tcp://1f182efb-wyoming-silero:10200`.
+В FlowPilot укажите в ноде «Синтез речи Wyoming» адрес `tcp://1f182efb-wyoming-silero:10200`.
 
-## Configuration
+## Настройки
 
-| Option | Default | What it does |
+| Параметр | По умолчанию | Что делает |
 | --- | --- | --- |
-| **Default voice** | `baya` | Used when the client does not pick a voice. `aidar` and `eugene` are male, `baya`, `kseniya` and `xenia` are female. |
-| **Sample rate** | `48000` | 8000, 24000 or 48000 Hz. The synthesis is equally fast for all three. |
-| **CPU threads** | `2` | More is not faster on a Raspberry Pi 5 and takes cores from Home Assistant. |
-| **Debug logging** | off | Every spoken sentence and its timing in the app log. |
+| **Голос по умолчанию** | `baya` | Используется, если клиент не выбрал голос. `aidar` и `eugene` — мужские голоса, `baya`, `kseniya` и `xenia` — женские. |
+| **Частота дискретизации** | `48000` | 8000, 24000 или 48000 Гц. Синтез одинаково быстрый на всех трёх. |
+| **Потоки процессора** | `2` | На Raspberry Pi 5 больше не быстрее и забирает ядра у Home Assistant. |
+| **Подробный журнал** | выкл. | Каждое произнесённое предложение и время его синтеза в журнале приложения. |
 
-### Without Home Assistant (Docker)
+### Без Home Assistant (Docker)
 
-The app image is a plain Docker image as well:
+Образ приложения — это и обычный Docker-образ:
 
 ```sh
 docker run -d --name wyoming-silero -p 10200:10200 -v wyoming-silero-data:/data \
   ghcr.io/darkdarin/ha-wyoming-silero --voice xenia --sample-rate 48000 --threads 2
 ```
 
-Add it in Home Assistant as a **Wyoming Protocol** integration with the host of the machine and port 10200.
+Добавьте его в Home Assistant как интеграцию **Wyoming Protocol** с адресом этой машины и портом 10200.
 
-## If something does not work
+## Если что-то не работает
 
-- **The app stops at the start with "Could not download".** The model download failed: check the internet
-  connection of the Home Assistant machine and restart the app.
-- **No silero in the text-to-speech list.** Check that the app is running and the Wyoming Protocol integration
-  for it is added.
-- **English words sound wrong.** The server only spells Latin letters out. Prepare the text before it reaches
-  the server, for example with FlowPilot's "Text for speech" node.
-- **A word is stressed wrong.** Put `+` before the stressed vowel in the text (`з+амок`, `зам+ок`).
+- **Приложение останавливается при запуске с «Could not download».** Не удалось скачать модель: проверьте доступ
+  сервера Home Assistant в интернет и перезапустите приложение.
+- **Нет silero в списке синтеза речи.** Проверьте, что приложение запущено и для него добавлена интеграция
+  Wyoming Protocol.
+- **Английские слова звучат неправильно.** Сервер только произносит латинские буквы по буквам. Подготовьте текст
+  до того, как он попадёт на сервер, например нодой FlowPilot «Подготовка текста для речи».
+- **Неправильное ударение в слове.** Поставьте `+` перед ударной гласной в тексте (`з+амок`, `зам+ок`).
 
-## How it works
+## Как это работает
 
 ```
-Assist / FlowPilot ──text (streamed)──▶ sentence buffer ──▶ text preparation ──▶ Silero v5_6_ru (torch, CPU)
-        ▲                                                                              │
-        └──────────────────────── audio, sentence by sentence ◀──────────────────────────┘
+Assist / FlowPilot ──текст (потоком)──▶ буфер предложений ──▶ подготовка текста ──▶ Silero v5_6_ru (torch, CPU)
+        ▲                                                                               │
+        └────────────────────────── звук, по предложению ◀───────────────────────────────┘
 ```
 
-The server collects the streamed text into sentences. Each finished sentence is prepared (numbers to words,
-markup and emoji out, Latin letters spelled) and synthesized on one worker thread shared by all clients, and its
-audio goes back right away, while the next sentence is still being written. The model is downloaded once into
-the app data, checked by its SHA-256 and warmed up before the server opens its port.
+Сервер собирает текст, который приходит потоком, в предложения. Каждое законченное предложение готовится (числа —
+в слова, разметка и эмодзи — прочь, латиница — по буквам) и синтезируется в одном рабочем потоке, общем для всех
+клиентов. Звук уходит клиенту сразу, пока следующее предложение ещё пишется. Модель скачивается один раз в данные
+приложения, проверяется по SHA-256 и прогревается до того, как сервер откроет порт.
 
-## Development
+## Разработка
 
-| Path | What |
+| Путь | Что там |
 | --- | --- |
-| `src/wyoming_silero/` | The server: model download, synthesis queue, text preparation, Wyoming handler, app glue |
-| `tests/` | Protocol and text tests on a fake synthesizer (no torch); `test_real_model.py` runs with the real model |
-| `addon/` | The Home Assistant app: options, translations, docs, changelog |
-| `Dockerfile` | The app image (Debian, CPU-only torch) |
-| `scripts/` | `synthesize.py` (a test client with timings), `build_addon.py` (local app), `brand.py` (images), `spike.py` |
+| `src/wyoming_silero/` | Сервер: загрузка модели, очередь синтеза, подготовка текста, обработчик Wyoming, связь с Supervisor |
+| `tests/` | Тесты протокола и текста на поддельном синтезаторе (без torch); `test_real_model.py` — на настоящей модели |
+| `addon/` | Приложение Home Assistant: параметры, переводы, документация, список изменений |
+| `Dockerfile` | Образ приложения (Debian, torch только для CPU) |
+| `scripts/` | `synthesize.py` (тестовый клиент с замерами), `build_addon.py` (локальное приложение), `brand.py` (картинки), `spike.py` |
 
 ```sh
-uv sync                     # without torch: enough for the tests
+uv sync                     # без torch: для тестов этого хватает
 uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pytest
-uv sync --extra model       # with torch, to run the server
+uv sync --extra model       # с torch, чтобы запустить сервер
 uv run wyoming-silero --data-dir ~/.cache/wyoming-silero --uri tcp://127.0.0.1:10200
 uv run scripts/synthesize.py "Привет! Сейчас 21 °C."
 ```
 
-## License
+## Лицензия
 
-The code is licensed under the [Apache License 2.0](LICENSE). The Silero `v5_6_ru` model, downloaded at run
-time, is licensed by Silero under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+Код распространяется по лицензии [Apache 2.0](LICENSE). Модель Silero `v5_6_ru`, которая скачивается при запуске,
+распространяется Silero по лицензии [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.ru).
