@@ -13,9 +13,9 @@ Assistant app with it exists for the Pi.
 
 ## Status
 
-Stages 0–4 of the roadmap are done: the server, text preparation, tests, measurements on the Pi and the Home
-Assistant app (`addon/`, root `Dockerfile` on Debian with CPU-only torch). Next: install it as a local app on the
-owner's Pi and check it end to end through FlowPilot (stage 5, each action with the owner's consent). Python is
+Released 0.1.0 (2026-11-13): the server, text preparation, the Home Assistant app (`addon/`, root `Dockerfile`
+on Debian with CPU-only torch), image in ghcr. Next: the owner installs it on the Pi; check it end to end through
+FlowPilot (stage 5, each action on the live HA with the owner's consent). Python is
 3.14; Linux needs a glibc base image (torch has no musl wheels).
 
 ## Layout and commands
@@ -83,7 +83,8 @@ of every TTS node, which is how speed is measured end to end.
 
 ## Repository and access
 
-- GitHub: `darkdarin/ha-wyoming-silero` — **not created yet; create it only when the owner asks.** Push over SSH.
+- GitHub: `darkdarin/ha-wyoming-silero` (public, created 2026-11-13). Push over SSH. Image
+  `ghcr.io/darkdarin/ha-wyoming-silero` is public (anonymous pull checked for 0.1.0).
 - The global `gh` account is a work account; never run `gh auth switch`. Use the personal account per command:
   `GH_TOKEN="$(gh auth token --user darkdarin)" gh …`, and never print the token.
 - Commits follow Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `ci:`), without AI attribution lines;
