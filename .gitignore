@@ -1,0 +1,27 @@
+# Secrets
+.env
+*.env
+.envrc
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# The Silero model is CC BY-NC 4.0: never commit it
+*.pt
+*.pt.part
+data/
+
+# Local audio
+*.wav
+*.raw
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# HA app local build staging
+wyoming_silero_app/.build/

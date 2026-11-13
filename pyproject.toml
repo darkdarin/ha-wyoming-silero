@@ -1,0 +1,74 @@
+[project]
+name = "wyoming-silero"
+version = "0.1.0"
+description = "Wyoming protocol text-to-speech server for the Russian Silero v5_6_ru model"
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    { name = "Pavel Babushkin", email = "idarksoft@gmail.com" }
+]
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    "num2words>=0.5.14",
+    "wyoming>=1.11.0,<2",
+]
+
+[project.optional-dependencies]
+# The neural model runtime. Tests run without it, on a fake synthesizer.
+model = [
+    "numpy>=2",
+    "torch>=2.15,<3",
+]
+
+[project.scripts]
+wyoming-silero = "wyoming_silero.__main__:main"
+
+[project.urls]
+Repository = "https://github.com/darkdarin/ha-wyoming-silero"
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.20",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.4.1.post1",
+    "ruff>=0.17.3",
+]
+
+[tool.uv]
+environments = ["sys_platform == 'darwin'", "sys_platform == 'linux'"]
+
+# CPU-only torch on Linux (the PyPI wheels pull CUDA); macOS wheels on PyPI are CPU-only already.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+markers = ["model: needs torch and the real Silero model (slow, local only)"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "ASYNC", "BLE", "RUF"]
+# Russian text is the point of this project: Cyrillic letters are not "ambiguous" here.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["torch", "torch.*", "numpy", "num2words", "num2words.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
