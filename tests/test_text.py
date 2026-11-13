@@ -44,7 +44,7 @@ def test_numbers(text: str, expected: str) -> None:
 @pytest.mark.parametrize(
     ("text", "expected"),
     [
-        ("**Готово**, свет _включён_.", "Готово, свет включён."),
+        ("**Готово**, свет _включён_.", "**Готово**, свет включён."),
         ("## Погода", "Погода."),
         ("- Купить хлеб", "Купить хлеб."),
         ("Позвоните [в поддержку](https://example.com/help).", "Позвоните в поддержку."),
@@ -57,6 +57,21 @@ def test_numbers(text: str, expected: str) -> None:
     ],
 )
 def test_markup_and_symbols(text: str, expected: str) -> None:
+    assert normalize(text) == expected
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Он *пришёл*?", "Он *пришёл*?"),
+        ("*Ты* это сделал?", "*Ты* это сделал?"),
+        ("Это **очень** важно!", "Это **очень** важно!"),
+        ("Прислали *нам* билеты?", "Прислали *нам* билеты?"),
+        ("Звёздочка * одна и ***три***.", "Звёздочка одна и три."),
+        ("2 * 3 = 6", "два три шесть."),
+    ],
+)
+def test_intonation_and_emphasis_marks_pass_through(text: str, expected: str) -> None:
     assert normalize(text) == expected
 
 

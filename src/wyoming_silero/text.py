@@ -1,5 +1,8 @@
 """Text preparation: from an LLM or Home Assistant answer to pieces the Russian model can speak.
 
+Speech marks the model reads stay: ``+`` before a stressed vowel, ``*word*`` (the intonation
+centre of a question) and ``**word**`` (emphasis); the rest of Markdown goes.
+
 The model speaks Cyrillic only: it skips digits, and text without Cyrillic letters makes it raise.
 High-quality English pronunciation belongs to the client (FlowPilot's "Text for speech" node, which
 marks stress with `+`); here a plain letter-based fallback only keeps the speaker from going silent.
@@ -22,7 +25,17 @@ _URL = re.compile(r"\b(?:https?://|www\.)\S+", re.IGNORECASE)
 _HEADING = re.compile(r"^\s{0,3}#{1,6}\s*", re.MULTILINE)
 _QUOTE = re.compile(r"^\s*>+\s?", re.MULTILINE)
 _BULLET = re.compile(r"^\s*(?:[-*+•–—]|\d{1,2}[.)])\s+", re.MULTILINE)
-_EMPHASIS = re.compile(r"\*+|~~|(?<!\w)_+|_+(?!\w)")
+_EMPHASIS = re.compile(r"~~|(?<!\w)_+|_+(?!\w)")
+# v5_6_ru reads *word* as the intonation centre of a question and **word** as emphasis
+# (habr.com/ru/articles/1015942 and 1094196): paired marks stay, stray asterisks go.
+_MARKED = re.compile(r"(\*{1,2})(?=[^\s*])([^*\n]*?[^\s*])\1(?!\*)")
+
+
+def _keep_speech_marks(text: str) -> str:
+    text = _MARKED.sub(lambda m: f"{chr(1) * len(m[1])}{m[2]}{chr(1) * len(m[1])}", text)
+    return text.replace("*", "").replace(chr(1), "*")
+
+
 _TABLE_RULE = re.compile(r"^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-*:?\s*$", re.MULTILINE)
 
 
@@ -37,6 +50,7 @@ def clean_markup(text: str) -> str:
     text = _QUOTE.sub("", text)
     text = _BULLET.sub("", text)
     text = _EMPHASIS.sub("", text)
+    text = _keep_speech_marks(text)
     text = text.replace("|", ", ")
     return text
 
