@@ -36,7 +36,7 @@ jobs:
           ' addon/CHANGELOG.md > notes.md
           [ -s notes.md ] || { echo "::error file=addon/CHANGELOG.md::no section for $version"; exit 1; }
           # A section script once ate the previous version's heading: each part exactly once.
-          for part in Server App; do
+          for part in Сервер Приложение; do
             count=$(grep -c "^### $part\$" notes.md || true)
             [ "$count" = 1 ] || { echo "::error file=addon/CHANGELOG.md::$count '### $part' in $version"; exit 1; }
           done
