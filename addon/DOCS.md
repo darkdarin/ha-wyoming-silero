@@ -1,61 +1,66 @@
 # Wyoming Silero
 
-Local Russian text-to-speech for Home Assistant Assist with the [Silero](https://github.com/snakers4/silero-models)
-model `v5_6_ru`, over the Wyoming protocol. Everything runs on the processor of your Home Assistant machine.
+Локальный русский синтез речи для Assist в Home Assistant на модели
+[Silero](https://github.com/snakers4/silero-models) `v5_6_ru`, по протоколу Wyoming. Всё работает на процессоре
+вашего сервера Home Assistant.
 
-## Model license
+## Лицензия модели
 
-The `v5_6_ru` model is made by Silero and licensed under
-[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): **non-commercial use only**. It is not part of
-this app. On the first start the app downloads it from `models.silero.ai` (about 150 MB), checks its SHA-256
-and keeps it in the app data; it is left out of backups and downloaded again after a restore. By using the app
-you accept the model license. The app code is licensed under Apache 2.0.
+Модель `v5_6_ru` сделана Silero и распространяется по лицензии
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.ru): **только некоммерческое использование**.
+Модель не входит в приложение: при первом запуске оно скачивает её с `models.silero.ai` (около 150 МБ),
+проверяет контрольную сумму SHA-256 и хранит в данных приложения. В резервные копии модель не попадает и после
+восстановления скачивается заново. Пользуясь приложением, вы принимаете лицензию модели. Код приложения
+распространяется по лицензии Apache 2.0.
 
-## Setup
+## Настройка
 
-1. Start the app. The first start downloads the model, so it needs internet access once; after that the app
-   works offline. The log shows the progress; the voice is ready after **Ready on tcp://0.0.0.0:10200**.
-2. Home Assistant discovers the app: confirm the **Wyoming Protocol** integration.
-3. In **Settings → Voice assistants**, select **silero** as text-to-speech of your assistant and pick a voice.
+1. Запустите приложение. При первом запуске оно скачивает модель, поэтому один раз нужен интернет; дальше
+   приложение работает без сети. Ход загрузки виден в журнале; голос готов, когда появится строка
+   **Ready on tcp://0.0.0.0:10200**.
+2. Home Assistant сам найдёт приложение: подтвердите интеграцию **Wyoming Protocol**.
+3. В **Настройки → Голосовые ассистенты** откройте своего ассистента, выберите **silero** как синтез речи
+   и выберите голос.
 
-FlowPilot and other apps reach the server inside Home Assistant at `tcp://1f182efb-wyoming-silero:10200`.
+FlowPilot и другие приложения внутри Home Assistant обращаются к серверу по адресу
+`tcp://1f182efb-wyoming-silero:10200`.
 
-## Options
+## Параметры
 
-| Option | What it does |
+| Параметр | Что делает |
 | --- | --- |
-| **Default voice** | Used when the assistant does not pick a voice. `aidar` and `eugene` are male, `baya`, `kseniya` and `xenia` are female. |
-| **Sample rate** | 8000, 24000 or 48000 Hz. The synthesis is equally fast for all three. |
-| **CPU threads** | 2 by default. More is not faster on a Raspberry Pi 5 and takes cores from Home Assistant. |
-| **Debug logging** | Every spoken sentence and its timing in the app log. |
+| **Голос по умолчанию** | Используется, если ассистент не выбрал голос. `aidar` и `eugene` — мужские голоса, `baya`, `kseniya` и `xenia` — женские. |
+| **Частота дискретизации** | 8000, 24000 или 48000 Гц. Синтез одинаково быстрый на всех трёх. |
+| **Потоки процессора** | По умолчанию 2. На Raspberry Pi 5 больше не быстрее и забирает ядра у Home Assistant. |
+| **Подробный журнал** | Каждое произнесённое предложение и время его синтеза в журнале приложения. |
 
-## What it does with the text
+## Что приложение делает с текстом
 
-The model speaks Russian text only, so the app prepares answers before speaking them:
+Модель произносит только русский текст, поэтому приложение готовит ответы перед синтезом:
 
-- numbers, times, dates, temperatures, percentages and some units become words: `21,5 °C` is read as
-  "двадцать одна целая пять десятых градуса", `18:45` as "восемнадцать сорок пять";
-- Markdown, links and emoji are left out; list items and headings are read as separate sentences;
-- Latin letters are spoken letter by letter (`USB` → "ю эс би") so an English answer is not silently dropped.
-  For proper English pronunciation, prepare the text before it reaches the app (FlowPilot's "Text for speech"
-  node does this);
-- a `+` before a vowel marks the stress (`з+амок`, `зам+ок`) and is passed to the model as is;
-- SSML (`<speak>…</speak>`) sent with the SSML text format goes to the model unchanged.
+- числа, время, даты, температура, проценты и некоторые единицы превращаются в слова: `21,5 °C` читается как
+  «двадцать одна целая пять десятых градуса», `18:45` — как «восемнадцать сорок пять»;
+- Markdown, ссылки и эмодзи пропускаются; пункты списков и заголовки читаются отдельными предложениями;
+- латинские буквы произносятся по буквам (`USB` → «ю эс би»), чтобы ответ на английском не пропал молча.
+  Чтобы английские слова звучали правильно, подготовьте текст до того, как он попадёт в приложение (это делает
+  нода FlowPilot «Подготовка текста для речи»);
+- `+` перед гласной обозначает ударение (`з+амок`, `зам+ок`) и передаётся модели как есть;
+- SSML (`<speak>…</speak>`), присланный с форматом текста SSML, уходит в модель без изменений.
 
-If there is nothing to say (only emoji, an empty text), the app answers with a Wyoming error instead of silence,
-so the client can tell what happened.
+Если сказать нечего (только эмодзи, пустой текст), приложение отвечает ошибкой Wyoming, а не тишиной, — так
+клиент понимает, что произошло.
 
-## Speed and memory
+## Скорость и память
 
-On a Raspberry Pi 5 the first sound of an answer comes 0.2–0.4 s after its first sentence ends, and speech is
-synthesized about 15 times faster than it plays. A long first sentence takes longer (about 0.8 s for 160
-characters). The app uses about 800 MB of memory.
+На Raspberry Pi 5 первый звук ответа появляется через 0,2–0,4 с после того, как дописано его первое предложение,
+а речь синтезируется примерно в 15 раз быстрее, чем звучит. Длинное первое предложение озвучивается дольше
+(около 0,8 с для 160 символов). Приложению нужно около 800 МБ памяти.
 
-## If something does not work
+## Если что-то не работает
 
-- **The app stops at the start with "Could not download".** The model download failed: check the internet
-  connection of your Home Assistant machine and restart the app.
-- **No silero in the text-to-speech list.** Check that the app is running and the Wyoming Protocol integration
-  for it is added (**Settings → Devices & services**).
-- **A word is stressed wrong.** Mark the stress with `+` before the vowel in the text you send, or report the
-  word to [Silero](https://github.com/snakers4/silero-models/issues).
+- **Приложение останавливается при запуске с «Could not download».** Не удалось скачать модель: проверьте
+  доступ сервера Home Assistant в интернет и перезапустите приложение.
+- **Нет silero в списке синтеза речи.** Проверьте, что приложение запущено и для него добавлена интеграция
+  Wyoming Protocol (**Настройки → Устройства и службы**).
+- **Неправильное ударение в слове.** Поставьте `+` перед ударной гласной в тексте или сообщите о слове
+  [авторам Silero](https://github.com/snakers4/silero-models/issues).

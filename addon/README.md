@@ -1,22 +1,22 @@
 # Wyoming Silero
 
-Local Russian **text-to-speech** for Home Assistant Assist with the
-[Silero](https://github.com/snakers4/silero-models) model `v5_6_ru`. Runs on the processor of your Home
-Assistant machine (Raspberry Pi 5 or amd64), with no cloud.
+Локальный русский **синтез речи** для Assist в Home Assistant на модели
+[Silero](https://github.com/snakers4/silero-models) `v5_6_ru`. Работает на процессоре вашего сервера
+Home Assistant (Raspberry Pi 5 или amd64), без облака.
 
-## Features
+## Возможности
 
-- Five native Russian voices: `aidar`, `baya`, `kseniya`, `xenia`, `eugene`.
-- Stresses, homographs, questions and exclamations right out of the model.
-- Spoken answers start while the assistant is still writing them: about 0.2–0.4 s on a Raspberry Pi 5.
-- Numbers, dates, temperatures, Markdown and emoji in assistant answers are read as words or left out; an
-  English answer is spoken letter by letter instead of leaving the speaker silent.
+- Пять русских голосов без акцента: `aidar`, `baya`, `kseniya`, `xenia`, `eugene`.
+- Ударения, омографы, вопросительная и восклицательная интонация — прямо из модели.
+- Ответ начинает звучать, пока ассистент ещё его пишет: на Raspberry Pi 5 — через 0,2–0,4 с.
+- Числа, даты, температура, Markdown и эмодзи в ответах ассистента читаются словами или пропускаются;
+  ответ на английском произносится по буквам, а не оставляет колонку в тишине.
 
-## Getting started
+## Как начать
 
-1. Start the app. The first start downloads the Silero model (about 150 MB).
-2. Confirm the discovered **Wyoming Protocol** integration.
-3. Select **silero** as text-to-speech of your voice assistant and pick a voice.
+1. Запустите приложение. При первом запуске оно скачает модель Silero (около 150 МБ).
+2. Подтвердите найденную интеграцию **Wyoming Protocol**.
+3. Выберите **silero** как синтез речи вашего голосового ассистента и выберите голос.
 
-**The Silero model is licensed under CC BY-NC 4.0: non-commercial use only.** Details are on the
-**Documentation** tab and in the [project README](https://github.com/darkdarin/ha-wyoming-silero).
+**Модель Silero распространяется по лицензии CC BY-NC 4.0: только некоммерческое использование.**
+Подробности — на вкладке **Документация** и в [README проекта](https://github.com/darkdarin/ha-wyoming-silero).

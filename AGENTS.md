@@ -68,8 +68,10 @@ of every TTS node, which is how speed is measured end to end.
 - **The model license is CC BY-NC 4.0 (non-commercial).** Never commit the model or put it in the image: the app
   downloads it on first start into its data directory (SHA-256 pinned, resumable). README and DOCS say so plainly.
   The code is Apache-2.0, like the rest of the family. Only Silero's base CIS models are MIT; we do not use them.
-- Everything in the repository is in **English**: code, identifiers, comments, docstrings, README, commit messages.
-  User-facing texts of the app have English and Russian translations. Research and plans go to Notion, in Russian.
+- The repository is in **English**: code, identifiers, comments, docstrings, the root README, commit messages.
+  Exception: the app's `addon/README.md` (app store card) and `addon/DOCS.md` (Documentation tab) are in
+  **Russian** — the audience of a Russian-only voice is Russian-speaking (owner's decision, 2026-11-13). Option
+  translations are en + ru. Research and plans go to Notion, in Russian.
 - Python with `uv`; the Python version is the one that has CPU wheels of torch for aarch64 (decided in the spike).
   Checks: `ruff check`, `ruff format --check`, `mypy --strict`, `pytest`. Protocol and text tests run on a fake
   synthesizer, without torch; the real model is a separate slow test run locally.
