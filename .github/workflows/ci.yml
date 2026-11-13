@@ -20,3 +20,46 @@ jobs:
         run: uv run mypy
       - name: Run tests
         run: uv run pytest -q
+
+  # The app image on both platforms, each on a native runner (built, not published).
+  docker:
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+            arch: amd64
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+            arch: aarch64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v4
+      - name: Build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          push: false
+          load: true
+          tags: wyoming-silero:ci
+          cache-from: type=gha,scope=${{ matrix.arch }}
+          cache-to: type=gha,scope=${{ matrix.arch }},mode=max
+      # torch imports and the server starts its command line (the model itself is not downloaded).
+      - name: Smoke test
+        run: |
+          docker run --rm wyoming-silero:ci --version
+          docker run --rm --entrypoint python wyoming-silero:ci -c "import torch, numpy; print(torch.__version__)"
+
+  addon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Lint the app configuration
+        uses: frenck/action-addon-linter@v2
+        with:
+          path: ./addon
+      - uses: astral-sh/setup-uv@v6
+      - name: Assemble the local app folder
+        run: uv run --no-project python -I scripts/build_addon.py

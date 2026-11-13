@@ -1,0 +1,4 @@
+# Home Assistant app repository: add this repository's URL in Settings → Apps → App Store → ⋮ → Repositories.
+name: Wyoming Silero
+url: https://github.com/darkdarin/ha-wyoming-silero
+maintainer: Pavel Babushkin <idarksoft@gmail.com>

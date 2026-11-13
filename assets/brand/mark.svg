@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="42.5 62.5 915 867.5">
+<title>Wyoming Silero</title>
+<polygon points="220,700 170,930 450,700" fill="#2BB8A6" />
+<rect x="80" y="100" width="840" height="640" rx="170" fill="none" stroke="#2BB8A6" stroke-width="75" />
+<g stroke-width="75" stroke-linecap="round">
+  <path d="M270 370 V470" stroke="#9C7BF0" />
+  <path d="M385 300 V540" stroke="#9C7BF0" />
+  <path d="M500 250 V590" stroke="#E9A23B" />
+  <path d="M615 300 V540" stroke="#9C7BF0" />
+  <path d="M730 370 V470" stroke="#9C7BF0" />
+</g>
+</svg>

@@ -1,0 +1,15 @@
+configuration:
+  voice:
+    name: Голос по умолчанию
+    description: Используется, если ассистент не выбрал голос. aidar и eugene — мужские голоса, baya, kseniya и xenia — женские.
+  sample_rate:
+    name: Частота дискретизации
+    description: Качество звука в Гц. Скорость синтеза речи одинакова для всех трёх.
+  threads:
+    name: Потоки процессора
+    description: Сколько ядер процессора может занять синтез. На Raspberry Pi 5 больше 2 не быстрее и забирает ядра у Home Assistant.
+  debug_logging:
+    name: Подробный журнал
+    description: Записывать в журнал приложения каждое произнесённое предложение и время его синтеза.
+network:
+  10200/tcp: Синтез речи Wyoming для клиентов вне Home Assistant; Assist и FlowPilot он не нужен.

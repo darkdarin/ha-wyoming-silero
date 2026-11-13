@@ -13,9 +13,10 @@ Assistant app with it exists for the Pi.
 
 ## Status
 
-The Wyoming server works on the Mac (stages 1–3 of the roadmap: server, text preparation, tests). Not done yet:
-the spike measurements on the Pi, the Home Assistant app (stage 4), the check on the Pi. Python is 3.14 (torch
-2.15 has CPU wheels for it on aarch64 and amd64; Linux needs a glibc base image, not Alpine).
+Stages 0–4 of the roadmap are done: the server, text preparation, tests, measurements on the Pi and the Home
+Assistant app (`addon/`, root `Dockerfile` on Debian with CPU-only torch). Next: install it as a local app on the
+owner's Pi and check it end to end through FlowPilot (stage 5, each action with the owner's consent). Python is
+3.14; Linux needs a glibc base image (torch has no musl wheels).
 
 ## Layout and commands
 
@@ -28,10 +29,18 @@ the spike measurements on the Pi, the Home Assistant app (stage 4), the check on
 | `tests/` | Fake synthesizer, no torch; `test_real_model.py` runs only with torch and a local model |
 | `scripts/synthesize.py` | Client that streams text like HA and prints `first_audio_ms` / `done_ms` / `realtime` |
 | `scripts/spike.py` | Stage 0 measurements of the bare model (self-contained `uv run` script) |
+| `src/wyoming_silero/supervisor.py` | App mode: options from `/data/options.json` and Wyoming discovery, only with `SUPERVISOR_TOKEN` |
+| `addon/` | The app (config, docs, changelog `### Server` / `### App`, translations, icons) |
+| `scripts/build_addon.py` | Local app folder in `dist/addon/wyoming_silero` (no `image:`, the Supervisor builds it) |
+| `scripts/brand.py` | Brand images: `uv run --no-project --with pillow python -I scripts/brand.py --font <Onest TTF>` |
 
 - `uv sync` (no torch) → `uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pytest`.
 - `uv sync --extra model` adds torch and numpy; the model lives in `~/.cache/wyoming-silero/` locally
   (`uv run python -m wyoming_silero --data-dir ~/.cache/wyoming-silero`).
+- App slug from this repository: `1f182efb_wyoming_silero`, host name inside HA `1f182efb-wyoming-silero`.
+- Measuring on the Pi without the app: the SSH app is Alpine (musl) without docker; run a glibc CPython through
+  the `ld-linux-aarch64.so.1` of an ubuntu-base rootfs in `/tmp`, site-packages built on the Mac with
+  `uv pip install --python-platform aarch64-manylinux_2_28 --target`. Results are in Notion ("Исследование").
 
 ## Documentation (read before working)
 

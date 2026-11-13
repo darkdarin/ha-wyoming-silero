@@ -1,0 +1,15 @@
+configuration:
+  voice:
+    name: Default voice
+    description: Used when the assistant does not pick a voice. aidar and eugene are male voices, baya, kseniya and xenia are female.
+  sample_rate:
+    name: Sample rate
+    description: Audio quality in Hz. The speed of speech synthesis is the same for all three.
+  threads:
+    name: CPU threads
+    description: Processor cores the voice may use. More than 2 is not faster on a Raspberry Pi 5 and takes cores from Home Assistant.
+  debug_logging:
+    name: Debug logging
+    description: Write every spoken sentence and its timing to the app log.
+network:
+  10200/tcp: Wyoming text-to-speech for clients outside Home Assistant; Assist and FlowPilot do not need it.

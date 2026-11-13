@@ -1,0 +1,35 @@
+# Home Assistant app: Russian text-to-speech with Silero v5_6_ru for Assist (Wyoming protocol).
+# The image is the repository's Dockerfile, published to ghcr for each release (release.yml);
+# scripts/build_addon.py makes a local app that Home Assistant builds from source instead.
+name: Wyoming Silero
+version: "0.1.0"
+slug: wyoming_silero
+description: Local Russian text-to-speech with Silero v5_6_ru for Assist (Wyoming protocol)
+url: https://github.com/darkdarin/ha-wyoming-silero
+image: ghcr.io/darkdarin/ha-wyoming-silero
+arch:
+  - aarch64
+  - amd64
+homeassistant: "2026.10.0"
+init: false
+startup: services
+discovery:
+  - wyoming
+# The model (CC BY-NC 4.0, about 150 MB) is downloaded again after a restore.
+backup_exclude:
+  - "*.pt"
+  - "*.pt.part"
+ports:
+  10200/tcp: null
+ports_description:
+  10200/tcp: Wyoming text-to-speech for clients outside Home Assistant (Assist and FlowPilot do not need it)
+options:
+  voice: baya
+  sample_rate: "48000"
+  threads: 2
+  debug_logging: false
+schema:
+  voice: list(aidar|baya|kseniya|xenia|eugene)
+  sample_rate: list(8000|24000|48000)
+  threads: int(1,4)
+  debug_logging: bool

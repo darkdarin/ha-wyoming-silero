@@ -23,5 +23,5 @@ data/
 # Local Claude Code settings
 .claude/settings.local.json
 
-# HA app local build staging
-wyoming_silero_app/.build/
+# Local app folder from scripts/build_addon.py
+dist/

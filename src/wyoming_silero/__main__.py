@@ -4,16 +4,19 @@ import argparse
 import asyncio
 import logging
 import os
+import sys
 import time
 from functools import partial
 from pathlib import Path
+from urllib.parse import urlparse
 
 from wyoming.info import Attribution, Info, TtsProgram, TtsVoice
 from wyoming.server import AsyncServer
 
 from . import __version__
 from .handler import SileroEventHandler, TtsSettings
-from .model import V5_6_RU, ensure_model
+from .model import V5_6_RU, ModelDownloadError, ensure_model
+from .supervisor import OPTIONS_PATH, announce, options_args, supervisor_token
 from .synthesizer import SAMPLE_RATES, VOICES, SynthesisQueue, Synthesizer
 
 _LOGGER = logging.getLogger(__name__)
@@ -78,16 +81,35 @@ async def serve(uri: str, synthesis: SynthesisQueue, settings: TtsSettings) -> N
     server = AsyncServer.from_uri(uri)
     info = build_info(synthesis.voices)
     _LOGGER.info("Ready on %s (voice %s, %d Hz)", uri, settings.voice, settings.sample_rate)
-    await server.run(partial(SileroEventHandler, info=info, synthesis=synthesis, settings=settings))
+    token = supervisor_token()
+    port = urlparse(uri).port
+    if token and port:
+        discovery = asyncio.create_task(announce(token, port))
+    try:
+        await server.run(
+            partial(SileroEventHandler, info=info, synthesis=synthesis, settings=settings)
+        )
+    finally:
+        if token and port:
+            discovery.cancel()
 
 
 def main() -> None:
-    args = parse_args()
+    argv = sys.argv[1:]
+    if supervisor_token() and OPTIONS_PATH.exists():
+        # A Home Assistant app: the options page decides, extra arguments still win.
+        argv = options_args() + argv
+    args = parse_args(argv)
     logging.basicConfig(
         level=logging.DEBUG if args.debug else logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     )
-    synthesis = SynthesisQueue(load_synthesizer(args.data_dir, args.threads))
+    try:
+        synthesizer = load_synthesizer(args.data_dir, args.threads)
+    except ModelDownloadError as err:
+        _LOGGER.error("%s; check the internet connection and restart", err)
+        sys.exit(1)
+    synthesis = SynthesisQueue(synthesizer)
     # The port opens only after the warm-up, so the first real request is fast.
     warm_up_s = synthesis.warm_up(args.voice, args.sample_rate)
     _LOGGER.info("Warmed up in %.2f s", warm_up_s)
