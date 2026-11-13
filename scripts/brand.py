@@ -3,8 +3,8 @@
     uv run --no-project --with pillow python -I scripts/brand.py --font <Onest TTF>
 
 ``--font`` is the Onest variable TTF (https://github.com/google/fonts/tree/main/ofl/onest), used
-for the wordmark. The mark is our own (a speech bubble with five sound bars, one per voice), not
-the Silero logo. Writes:
+for the wordmark. The mark is our own (a sound wave with a stress mark over its crest), not the
+Silero logo. Writes:
 
 - ``assets/brand/mark.svg``                 vector source of the mark
 - ``assets/brand/logo.png``, ``dark_logo.png``  logos for the README (light and dark themes)
@@ -17,6 +17,7 @@ Images are PNG, transparent, without empty margins (as home-assistant/brands ask
 from __future__ import annotations
 
 import argparse
+import math
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -32,20 +33,28 @@ INK_DARK = "#E4E7EC"  # wordmark on dark backgrounds
 INK_ANY = "#6B7484"  # wordmark that reads on both (the app store has no dark variant)
 CANVAS = "#1B1F26"
 
-# Geometry in a unit square (the same numbers go into the SVG)
-BUBBLE = (0.08, 0.10, 0.92, 0.74)  # left, top, right, bottom of the stroke's centre line
-BUBBLE_R = 0.17  # corner radius
-BUBBLE_W = 0.075  # stroke width
-TAIL = ((0.22, 0.70), (0.17, 0.93), (0.45, 0.70))  # filled
-BAR_Y = 0.42  # centre line of the sound bars
-BAR_W = 0.075
-BARS = (  # x, height, colour
-    (0.27, 0.10, VIOLET),
-    (0.385, 0.24, VIOLET),
-    (0.50, 0.34, AMBER),
-    (0.615, 0.24, VIOLET),
-    (0.73, 0.10, VIOLET),
-)
+# Geometry in a unit square (the same numbers go into the SVG).
+# A spoken wave with a stress mark over its main crest: Silero v5_6_ru puts stresses itself.
+WAVE_X = (0.08, 0.92)  # where the wave starts and ends
+WAVE_Y = 0.60  # its rest line
+WAVE_A = 0.22  # the height of the main crest
+WAVE_PERIODS = 2.5  # the main crest in the middle, smaller ones fading out
+WAVE_W = 0.07
+DOT_R = 0.07  # violet dot at the start: the text the voice comes from
+ACCENT = ((0.485, 0.27), (0.565, 0.15))  # the stress mark, an acute accent
+ACCENT_W = 0.075
+
+
+def wave_points(n: int = 160) -> list[tuple[float, float]]:
+    """The wave in unit coordinates: a sine under a sine envelope, flat at both ends."""
+    x0, x1 = WAVE_X
+    points = []
+    for i in range(n + 1):
+        t = i / n
+        envelope = math.sin(math.pi * t)
+        y = WAVE_Y - WAVE_A * envelope * math.cos(2 * math.pi * WAVE_PERIODS * (t - 0.5))
+        points.append((x0 + (x1 - x0) * t, y))
+    return points
 
 
 def _round_line(d: ImageDraw.ImageDraw, a: tuple[float, float], b: tuple[float, float],
@@ -60,17 +69,15 @@ def mark(size: int) -> Image.Image:
     s = 2048
     img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    left, top, right, bottom = (v * s for v in BUBBLE)
-    w = BUBBLE_W * s
-    d.polygon([(x * s, y * s) for x, y in TAIL], fill=TEAL)
-    d.rounded_rectangle(
-        [left - w / 2, top - w / 2, right + w / 2, bottom + w / 2],
-        radius=(BUBBLE_R * s) + w / 2,
-        outline=TEAL,
-        width=round(w),
-    )
-    for x, h, color in BARS:
-        _round_line(d, (x * s, (BAR_Y - h / 2) * s), (x * s, (BAR_Y + h / 2) * s), BAR_W * s, color)
+    w = WAVE_W * s
+    points = [(x * s, y * s) for x, y in wave_points()]
+    d.line(points, fill=TEAL, width=round(w), joint="curve")
+    for x, y in points:  # smooth round joints and caps
+        d.ellipse([x - w / 2, y - w / 2, x + w / 2, y + w / 2], fill=TEAL)
+    (ax, ay), (bx, by) = ACCENT
+    _round_line(d, (ax * s, ay * s), (bx * s, by * s), ACCENT_W * s, AMBER)
+    x, y, r = WAVE_X[0] * s, WAVE_Y * s, DOT_R * s
+    d.ellipse([x - r, y - r, x + r, y + r], fill=VIOLET)
     trimmed = img.crop(img.getbbox())
     side = max(trimmed.size)
     square = Image.new("RGBA", (side, side), (0, 0, 0, 0))
@@ -81,22 +88,20 @@ def mark(size: int) -> Image.Image:
 def mark_svg() -> str:
     """The same mark as SVG (units of 1/1000)."""
     k = 1000
-    left, top, right, bottom = (v * k for v in BUBBLE)
-    w = BUBBLE_W * k
-    tail = " ".join(f"{x * k:g},{y * k:g}" for x, y in TAIL)
-    bars = "\n".join(
-        f'  <path d="M{x * k:g} {(BAR_Y - h / 2) * k:g} V{(BAR_Y + h / 2) * k:g}" stroke="{c}" />'
-        for x, h, c in BARS
-    )
-    vb_left, vb_top = left - w / 2, top - w / 2
-    vb_right, vb_bottom = right + w / 2, max(bottom + w / 2, max(y for _, y in TAIL) * k)
+    points = wave_points(60)
+    path = "M" + " L".join(f"{x * k:.1f} {y * k:.1f}" for x, y in points)
+    (ax, ay), (bx, by) = ACCENT
+    ys = [y for _, y in points]
+    pad = max(WAVE_W, ACCENT_W, 2 * DOT_R) / 2
+    vb_left = (WAVE_X[0] - DOT_R) * k
+    vb_right = (WAVE_X[1] + WAVE_W / 2) * k
+    vb_top = (min(by, min(ys)) - pad) * k
+    vb_bottom = (max(ys) + pad) * k
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb_left:g} {vb_top:g} {vb_right - vb_left:g} {vb_bottom - vb_top:g}">
 <title>{NAME}</title>
-<polygon points="{tail}" fill="{TEAL}" />
-<rect x="{left:g}" y="{top:g}" width="{right - left:g}" height="{bottom - top:g}" rx="{BUBBLE_R * k:g}" fill="none" stroke="{TEAL}" stroke-width="{w:g}" />
-<g stroke-width="{BAR_W * k:g}" stroke-linecap="round">
-{bars}
-</g>
+<path d="{path}" fill="none" stroke="{TEAL}" stroke-width="{WAVE_W * k:g}" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M{ax * k:g} {ay * k:g} L{bx * k:g} {by * k:g}" stroke="{AMBER}" stroke-width="{ACCENT_W * k:g}" stroke-linecap="round" />
+<circle cx="{WAVE_X[0] * k:g}" cy="{WAVE_Y * k:g}" r="{DOT_R * k:g}" fill="{VIOLET}" />
 </svg>
 """  # noqa: E501
 

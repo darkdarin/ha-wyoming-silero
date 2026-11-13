@@ -1,12 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="42.5 62.5 915 867.5">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 80 945 768.221">
 <title>Wyoming Silero</title>
-<polygon points="220,700 170,930 450,700" fill="#2BB8A6" />
-<rect x="80" y="100" width="840" height="640" rx="170" fill="none" stroke="#2BB8A6" stroke-width="75" />
-<g stroke-width="75" stroke-linecap="round">
-  <path d="M270 370 V470" stroke="#9C7BF0" />
-  <path d="M385 300 V540" stroke="#9C7BF0" />
-  <path d="M500 250 V590" stroke="#E9A23B" />
-  <path d="M615 300 V540" stroke="#9C7BF0" />
-  <path d="M730 370 V470" stroke="#9C7BF0" />
-</g>
+<path d="M80.0 600.0 L94.0 597.0 L108.0 588.5 L122.0 575.7 L136.0 560.4 L150.0 545.0 L164.0 532.0 L178.0 523.8 L192.0 522.5 L206.0 529.4 L220.0 545.0 L234.0 569.0 L248.0 600.0 L262.0 635.8 L276.0 673.6 L290.0 710.0 L304.0 741.6 L318.0 765.1 L332.0 778.0 L346.0 778.2 L360.0 765.0 L374.0 738.6 L388.0 700.5 L402.0 653.2 L416.0 600.0 L430.0 545.0 L444.0 492.4 L458.0 446.4 L472.0 410.5 L486.0 387.8 L500.0 380.0 L514.0 387.8 L528.0 410.5 L542.0 446.4 L556.0 492.4 L570.0 545.0 L584.0 600.0 L598.0 653.2 L612.0 700.5 L626.0 738.6 L640.0 765.0 L654.0 778.2 L668.0 778.0 L682.0 765.1 L696.0 741.6 L710.0 710.0 L724.0 673.6 L738.0 635.8 L752.0 600.0 L766.0 569.0 L780.0 545.0 L794.0 529.4 L808.0 522.5 L822.0 523.8 L836.0 532.0 L850.0 545.0 L864.0 560.4 L878.0 575.7 L892.0 588.5 L906.0 597.0 L920.0 600.0" fill="none" stroke="#2BB8A6" stroke-width="70" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M485 270 L565 150" stroke="#E9A23B" stroke-width="75" stroke-linecap="round" />
+<circle cx="80" cy="600" r="70" fill="#9C7BF0" />
 </svg>
