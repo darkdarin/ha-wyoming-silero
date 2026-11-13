@@ -1,6 +1,6 @@
 [project]
 name = "wyoming-silero"
-version = "0.1.0"
+version = "0.1.1"
 description = "Wyoming protocol text-to-speech server for the Russian Silero v5_6_ru model"
 readme = "README.md"
 license = "Apache-2.0"

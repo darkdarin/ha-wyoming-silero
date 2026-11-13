@@ -2,7 +2,7 @@
 # The image is the repository's Dockerfile, published to ghcr for each release (release.yml);
 # scripts/build_addon.py makes a local app that Home Assistant builds from source instead.
 name: Wyoming Silero
-version: "0.1.0"
+version: "0.1.1"
 slug: wyoming_silero
 description: Local Russian text-to-speech with Silero v5_6_ru for Assist (Wyoming protocol)
 url: https://github.com/darkdarin/ha-wyoming-silero
