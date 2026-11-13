@@ -57,7 +57,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Where the model is downloaded (default: $WYOMING_SILERO_DATA or /data)",
     )
     parser.add_argument("--voice", choices=VOICES, default="baya", help="Default voice")
-    parser.add_argument("--sample-rate", type=int, choices=SAMPLE_RATES, default=24000)
+    parser.add_argument("--sample-rate", type=int, choices=SAMPLE_RATES, default=48000)
     parser.add_argument("--threads", type=int, default=2, help="torch CPU threads")
     parser.add_argument("--debug", action="store_true", help="Log DEBUG messages")
     parser.add_argument("--version", action="version", version=__version__)

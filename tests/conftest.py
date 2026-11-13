@@ -13,7 +13,7 @@ from wyoming_silero.__main__ import build_info
 from wyoming_silero.handler import SileroEventHandler, TtsSettings
 from wyoming_silero.synthesizer import VOICES, SynthesisError, SynthesisQueue
 
-RATE = 24000
+RATE = 48000
 
 
 def fake_audio(text: str) -> bytes:
